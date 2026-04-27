@@ -1,0 +1,24 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "YOUR_SHOPIFY_CLIENT_ID"
+name = "Dylan CS Agent"
+application_url = "https://YOUR_RENDER_URL.onrender.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2026-04"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_orders,read_product_listings,read_products,read_returns,read_shipping"
+optional_scopes = [ ]
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = [ "https://YOUR_RENDER_URL.onrender.com/auth/callback", "https://barefootincau.myshopify.com/auth/callback" ]
+
+[customer_authentication]
+redirect_uris = ["https://YOUR_RENDER_URL.onrender.com/auth/callback", "https://barefootincau.myshopify.com/auth/callback"]
