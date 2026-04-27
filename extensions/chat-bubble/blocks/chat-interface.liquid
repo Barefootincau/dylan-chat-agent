@@ -1,0 +1,137 @@
+{{ 'chat.css' | asset_url | stylesheet_tag }}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<div class="shop-ai-chat-container">
+  <div class="shop-ai-chat-bubble{% if block.settings.bubble_image != blank %} has-image{% endif %}{% if block.settings.bubble_label != blank %} has-label{% endif %}" style="background-color: {{ block.settings.chat_bubble_color }}">
+    {% if block.settings.bubble_image != blank %}
+      <img src="{{ block.settings.bubble_image | image_url: width: 120 }}" alt="Chat" class="shop-ai-chat-bubble-img" width="120" height="120">
+    {% else %}
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    {% endif %}
+    {% if block.settings.bubble_label != blank %}
+      <span class="shop-ai-chat-bubble-label">{{ block.settings.bubble_label }}</span>
+    {% endif %}
+  </div>
+
+  <div class="shop-ai-chat-window">
+    <div class="shop-ai-chat-header">
+      <div>{{ 'chat.title' | t }}</div>
+      <button class="shop-ai-chat-close">✕</button>
+    </div>
+
+    <div class="shop-ai-chat-messages">
+      <!-- Messages will be added here by JavaScript -->
+    </div>
+
+    <div class="shop-ai-chat-input">
+      <input type="text" placeholder="{{ 'chat.inputPlaceholder' | t }}">
+      <button class="shop-ai-chat-send">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'chat.js' | asset_url }}" defer></script>
+<script>
+  window.shopChatConfig = {
+    promptType: {{ block.settings.system_prompt | json }},
+    welcomeMessage: {{ block.settings.welcome_message | json }},
+    bubbleColor: {{ block.settings.chat_bubble_color | json }},
+    apiUrl: {{ block.settings.api_url | json }},
+    quickReplies: [
+      {{ block.settings.faq_1 | json }},
+      {{ block.settings.faq_2 | json }},
+      {{ block.settings.faq_3 | json }},
+      {{ block.settings.faq_4 | json }}
+    ].filter(function(r) { return r && r.trim(); })
+  };
+  window.shopId = {{ shop.id }};
+</script>
+
+{% schema %}
+{
+  "name": "AI Chat Assistant",
+  "target": "body",
+  "settings": [
+    {
+      "type": "color",
+      "id": "chat_bubble_color",
+      "label": "Chat Bubble Color",
+      "default": "#5046e4"
+    },
+    {
+      "type": "image_picker",
+      "id": "bubble_image",
+      "label": "Bubble Image",
+      "info": "Replaces the icon. Use a square image for best results."
+    },
+    {
+      "type": "text",
+      "id": "bubble_label",
+      "label": "Bubble Label",
+      "info": "Text shown next to the chat icon. Leave blank for icon only.",
+      "default": "Chat with Dylan"
+    },
+    {
+      "type": "text",
+      "id": "welcome_message",
+      "label": "Welcome Message",
+      "default": "👟 Hi! I'm Dylan. Ask me anything about sizing, shipping, returns, or finding the right shoe."
+    },
+    {
+      "type": "text",
+      "id": "faq_1",
+      "label": "Quick Reply 1",
+      "default": "Help me find the right size"
+    },
+    {
+      "type": "text",
+      "id": "faq_2",
+      "label": "Quick Reply 2",
+      "default": "Track my order"
+    },
+    {
+      "type": "text",
+      "id": "faq_3",
+      "label": "Quick Reply 3",
+      "default": "Returns & exchanges"
+    },
+    {
+      "type": "text",
+      "id": "faq_4",
+      "label": "Quick Reply 4",
+      "info": "Optional. Leave blank to hide.",
+      "default": "Shipping times"
+    },
+    {
+      "type": "text",
+      "id": "api_url",
+      "label": "Backend API URL",
+      "info": "Your Render app URL, e.g. https://your-app.onrender.com",
+      "default": "https://your-app.onrender.com"
+    },
+    {
+      "type": "select",
+      "id": "system_prompt",
+      "label": "System Prompt",
+      "options": [
+        {
+          "value": "standardAssistant",
+          "label": "Standard Assistant"
+        },
+        {
+          "value": "enthusiasticAssistant",
+          "label": "Enthusiastic Assistant"
+        }
+      ],
+      "default": "standardAssistant"
+    }
+  ]
+}
+{% endschema %}
