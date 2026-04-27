@@ -1,0 +1,8 @@
+{
+  "chat": {
+    "title": "Dylan",
+    "inputPlaceholder": "Ask me anything...",
+    "sendButton": "Send",
+    "closeButton": "Close"
+  }
+}
