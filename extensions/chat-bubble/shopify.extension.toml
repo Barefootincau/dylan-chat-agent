@@ -1,0 +1,4 @@
+api_version = "2026-04"
+name = "Dylan Chat"
+handle = "chat-bubble"
+type = "theme_app_extension"

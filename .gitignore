@@ -21,6 +21,7 @@ shopify.*.toml
 !shopify.app.toml
 !shopify.app.dylan-chat-agent.toml
 !shopify.web.toml
+!shopify.extension.toml
 
 /extensions/*/dist
 
