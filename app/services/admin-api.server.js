@@ -49,7 +49,7 @@ export async function lookupOrder({ shopDomain, email, orderNumber }) {
   if (!token) throw new Error('No admin session found for shop');
 
   const normalized = orderNumber.replace(/^#*/, '#');
-  const searchQuery = `name:${normalized}`;
+  const searchQuery = `name:"${normalized}"`;
 
   const response = await fetch(
     `https://${hostname}/admin/api/2026-04/graphql.json`,

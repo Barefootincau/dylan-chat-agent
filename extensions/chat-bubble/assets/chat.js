@@ -320,6 +320,7 @@
             ShopAIChat.UI.removeTypingIndicator();
             break;
           case 'error':
+          case 'billing_error':
             ShopAIChat.UI.removeTypingIndicator();
             currentMessageElement.textContent = "Sorry, I couldn't process your request. Please try again later.";
             break;

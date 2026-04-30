@@ -23,9 +23,12 @@ export function createStreamManager(encoder, controller) {
   const handleStreamingError = (error) => {
     console.error('Error processing streaming request:', error);
 
-    if (error.status === 401 || error.message.includes('auth') || error.message.includes('key')) {
+    if (error.message?.includes('credit balance') || error.message?.includes('too low')) {
+      console.error('BILLING ERROR: Anthropic API credit balance too low — top up at console.anthropic.com');
+      sendError({ type: 'billing_error', error: 'Service temporarily unavailable', details: 'API credit balance exhausted' });
+    } else if (error.status === 401 || error.message?.includes('auth') || error.message?.includes('key')) {
       sendError({ type: 'error', error: 'Authentication failed with Claude API', details: 'Please check your API key in environment variables' });
-    } else if (error.status === 429 || error.status === 529 || error.message.includes('Overloaded')) {
+    } else if (error.status === 429 || error.status === 529 || error.message?.includes('Overloaded')) {
       sendError({ type: 'rate_limit_exceeded', error: 'Rate limit exceeded', details: 'Please try again later' });
     } else {
       sendError({ type: 'error', error: 'Failed to get response from Claude', details: error.message });

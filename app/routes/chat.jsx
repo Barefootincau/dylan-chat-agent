@@ -13,7 +13,7 @@ const ORDER_LOOKUP_TOOL = {
     type: 'object',
     properties: {
       email: { type: 'string', description: 'Customer email address on the order' },
-      order_number: { type: 'string', description: 'Order number, e.g. 1234 or #1234' }
+      order_number: { type: 'string', description: 'Order number exactly as shown, e.g. 1234, #1234, or FF42198' }
     },
     required: ['email', 'order_number']
   }
