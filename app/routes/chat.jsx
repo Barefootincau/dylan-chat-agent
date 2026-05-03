@@ -141,7 +141,7 @@ async function handleChatSession({ request, userMessage, conversationId, promptT
             let toolUseResponse;
             if (toolName === ORDER_LOOKUP_TOOL.name) {
               try {
-                const result = await lookupOrder({ shopDomain, email: toolArgs.email, orderNumber: toolArgs.order_number });
+                const result = await lookupOrder({ email: toolArgs.email, orderNumber: toolArgs.order_number });
                 toolUseResponse = { content: [{ type: 'text', text: JSON.stringify(result) }] };
               } catch (err) {
                 console.error('Order lookup failed:', err.message);
