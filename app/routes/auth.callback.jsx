@@ -4,28 +4,6 @@ export async function loader({ request }) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
-  const hmac = url.searchParams.get("hmac");
-  const shop = url.searchParams.get("shop");
-
-  // Admin OAuth callback (Barefoot Order API install) — exchange code and log token
-  if (hmac && shop && code) {
-    try {
-      const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          client_id: process.env.BAREFOOT_ORDER_CLIENT_ID,
-          client_secret: process.env.BAREFOOT_ORDER_CLIENT_SECRET,
-          code,
-        }),
-      });
-      const tokenData = await tokenRes.json();
-      console.log(`[ADMIN TOKEN CAPTURE] ${JSON.stringify(tokenData)}`);
-    } catch (e) {
-      console.error("[ADMIN TOKEN CAPTURE] Failed:", e.message);
-    }
-    return new Response("Token captured — check Render logs for ADMIN TOKEN CAPTURE", { status: 200 });
-  }
 
   const [conversationId] = state.split("-");
 
