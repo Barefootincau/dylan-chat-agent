@@ -1,3 +1,4 @@
+import { unauthenticated } from '../shopify.server.js';
 import prisma from '../db.server.js';
 
 const ORDER_QUERY = `
@@ -25,50 +26,28 @@ const ORDER_QUERY = `
   }
 `;
 
-async function getAdminToken(shopDomain) {
-  const hostname = new URL(shopDomain).hostname;
-
-  let session = await prisma.session.findFirst({
-    where: { shop: hostname },
+async function getShopDomain() {
+  const session = await prisma.session.findFirst({
     orderBy: [{ isOnline: 'asc' }, { expires: 'desc' }]
   });
-
-  if (!session) {
-    session = await prisma.session.findFirst({
-      orderBy: [{ isOnline: 'asc' }, { expires: 'desc' }]
-    });
-  }
-
-  console.log(`Admin session: ${session ? `found (shop: ${session.shop})` : 'not found'}`);
-
-  return { token: session?.accessToken || null, hostname: session?.shop || hostname };
+  if (!session?.shop) throw new Error('No admin session found for shop');
+  console.log(`Admin session: found (shop: ${session.shop})`);
+  return session.shop;
 }
 
-export async function lookupOrder({ shopDomain, email, orderNumber }) {
-  const { token, hostname } = await getAdminToken(shopDomain);
-  if (!token) throw new Error('No admin session found for shop');
+export async function lookupOrder({ email, orderNumber }) {
+  const shop = await getShopDomain();
+  const { admin } = await unauthenticated.admin(shop);
 
   const normalized = orderNumber.replace(/^#*/, '#');
   const searchQuery = `name:"${normalized}"`;
 
-  const response = await fetch(
-    `https://${hostname}/admin/api/2026-04/graphql.json`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Access-Token': token
-      },
-      body: JSON.stringify({ query: ORDER_QUERY, variables: { query: searchQuery } })
-    }
-  );
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Admin API HTTP ${response.status}: ${body}`);
-  }
+  const response = await admin.graphql(ORDER_QUERY, {
+    variables: { query: searchQuery }
+  });
 
   const data = await response.json();
+
   if (data.errors) {
     throw new Error(`GraphQL error: ${data.errors[0]?.message}`);
   }
