@@ -1,6 +1,3 @@
-import { unauthenticated } from '../shopify.server.js';
-import prisma from '../db.server.js';
-
 const ORDER_QUERY = `
   query GetOrder($query: String!) {
     orders(first: 5, query: $query) {
@@ -26,25 +23,31 @@ const ORDER_QUERY = `
   }
 `;
 
-async function getShopDomain() {
-  const session = await prisma.session.findFirst({
-    orderBy: [{ isOnline: 'asc' }, { expires: 'desc' }]
-  });
-  if (!session?.shop) throw new Error('No admin session found for shop');
-  console.log(`Admin session: found (shop: ${session.shop})`);
-  return session.shop;
-}
-
 export async function lookupOrder({ email, orderNumber }) {
-  const shop = await getShopDomain();
-  const { admin } = await unauthenticated.admin(shop);
+  const token = process.env.SHOPIFY_ADMIN_TOKEN;
+  const shop = process.env.SHOPIFY_SHOP_DOMAIN || 'barefootincau.myshopify.com';
+
+  if (!token) throw new Error('SHOPIFY_ADMIN_TOKEN env var not set');
 
   const normalized = orderNumber.replace(/^#*/, '#');
   const searchQuery = `name:"${normalized}"`;
 
-  const response = await admin.graphql(ORDER_QUERY, {
-    variables: { query: searchQuery }
-  });
+  const response = await fetch(
+    `https://${shop}/admin/api/2026-04/graphql.json`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Access-Token': token
+      },
+      body: JSON.stringify({ query: ORDER_QUERY, variables: { query: searchQuery } })
+    }
+  );
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Admin API HTTP ${response.status}: ${body}`);
+  }
 
   const data = await response.json();
 
