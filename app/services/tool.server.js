@@ -62,10 +62,26 @@ export function createToolService() {
     };
   };
 
+  // Shopify's storefront MCP tools (e.g. search_shop_policies_and_faqs) return content
+  // blocks with an extra "mimeType" field per the MCP spec. Claude's Messages API rejects
+  // any field on a tool_result content block other than {type, text} (or {type, source} for
+  // images), so passing Shopify's raw MCP content straight through causes every call to that
+  // tool to fail with "Extra inputs are not permitted". Strip it down to what Claude accepts.
+  const sanitizeToolResultContent = (content) => {
+    if (!Array.isArray(content)) return content;
+    return content.map((block) => {
+      if (!block || typeof block !== 'object') return block;
+      if (block.type === 'text') return { type: 'text', text: block.text };
+      if (block.type === 'image') return { type: 'image', source: block.source };
+      return block;
+    });
+  };
+
   const addToolResultToHistory = async (conversationHistory, toolUseId, content, conversationId) => {
+    const sanitizedContent = sanitizeToolResultContent(content);
     const toolResultMessage = {
       role: 'user',
-      content: [{ type: "tool_result", tool_use_id: toolUseId, content }]
+      content: [{ type: "tool_result", tool_use_id: toolUseId, content: sanitizedContent }]
     };
 
     conversationHistory.push(toolResultMessage);
