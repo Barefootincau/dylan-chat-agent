@@ -163,8 +163,8 @@ is no benefit to combining them — it's an either/or situation.
 
 | Order                                          | Cost                |
 | ---------------------------------------------- | ------------------- |
-| Australia, orders **under $150**               | **$10** standard    |
-| Australia, orders **$150 and over**            | **Free** standard   |
+| Australia, orders **under $250**               | **$10** standard    |
+| Australia, orders **$250 and over**            | **Free** standard   |
 | **Express** delivery (Australia, 2–4 days)     | **$15.95** flat     |
 | **New Zealand** (any order)                    | **$15.95** flat     |
 
@@ -383,7 +383,7 @@ The Barefoot Inc. website supports multiple currencies at checkout:
 
 | Question                              | Short answer                                                                                                              |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **How much is shipping?**             | $10 standard within Australia for orders under $150. Free standard for orders $150+. Express AU $15.95 (2–4 days). NZ $15.95 flat. |
+| **How much is shipping?**             | $10 standard within Australia for orders under $250. Free standard for orders $250+. Express AU $15.95 (2–4 days). NZ $15.95 flat. |
 | **Do you ship to NZ?**                | Yes — $15.95 flat. Up to 2 weeks for metro NZ areas; rural a little longer.                                               |
 | **Do you ship internationally?**      | Yes, to select countries via AU Post. Currency options (AUD/NZD/CAD/USD) available at checkout.                          |
 | **How long does delivery take?**      | NSW/VIC/QLD/ACT: 2–7 working days. SA/WA/NT/TAS: 4–10 working days. Rural/remote: allow 7–14 days.                        |
