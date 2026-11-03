@@ -64,13 +64,19 @@
           this.scrollToBottom();
         } else {
           document.body.classList.remove('shop-ai-chat-open');
+          ShopAIChat.CartLink.onChatClosed();
         }
+      },
+
+      openChatWindow: function() {
+        if (!this.elements.chatWindow.classList.contains('active')) this.toggleChatWindow();
       },
 
       closeChatWindow: function() {
         const { chatWindow, chatInput } = this.elements;
         chatWindow.classList.remove('active');
         if (this.isMobile) { chatInput.blur(); document.body.classList.remove('shop-ai-chat-open'); }
+        ShopAIChat.CartLink.onChatClosed();
       },
 
       scrollToBottom: function() {
@@ -530,10 +536,106 @@
       }
     },
 
+    // "Questions? Ask Dylan" link inside the theme's cart drawer.
+    // While the drawer is open the floating bubble is hidden so it never
+    // covers the checkout button; the link at the bottom of the drawer
+    // opens the chat instead.
+    CartLink: {
+      drawerSelector: '#CartDrawer',
+      footerSelector: '.drawer__footer',
+
+      init: function() {
+        const config = window.shopChatConfig || {};
+        if (!config.cartDrawerLink) return;
+        const drawer = document.querySelector(this.drawerSelector);
+        if (!drawer) return;
+        this.drawer = drawer;
+        this.ensureLink();
+
+        // Impulse adds `drawer--is-open` to #CartDrawer while the cart is showing.
+        const sync = () => this.syncOpenState();
+        new MutationObserver(sync).observe(drawer, { attributes: true, attributeFilter: ['class'] });
+        // Cart apps can re-render the drawer footer; put the link back if it disappears.
+        new MutationObserver(() => this.ensureLink()).observe(drawer, { childList: true, subtree: true });
+        sync();
+      },
+
+      isOpen: function() {
+        return this.drawer.classList.contains('drawer--is-open');
+      },
+
+      syncOpenState: function() {
+        document.body.classList.toggle('shop-ai-cart-drawer-open', this.isOpen());
+      },
+
+      // Impulse closes the drawer on any click outside it and traps focus inside it,
+      // so the chat can't sit on top of an open cart. Close the cart, open Dylan,
+      // and bring the cart back when the customer closes the chat.
+      openChatFromCart: function() {
+        const closeBtn = this.drawer.querySelector('.js-drawer-close');
+        if (closeBtn) closeBtn.click();
+        this.reopenCartOnClose = true;
+        ShopAIChat.UI.openChatWindow();
+        // Impulse returns focus to the cart icon ~500ms after closing; take it back.
+        setTimeout(() => {
+          if (ShopAIChat.UI.elements.chatWindow.classList.contains('active')) {
+            ShopAIChat.UI.elements.chatInput.focus();
+          }
+        }, 600);
+      },
+
+      onChatClosed: function() {
+        if (!this.reopenCartOnClose) return;
+        this.reopenCartOnClose = false;
+        const openBtn = document.querySelector('.js-drawer-open-cart');
+        if (openBtn) setTimeout(() => openBtn.click(), 50);
+      },
+
+      ensureLink: function() {
+        if (this.drawer.querySelector('.shop-ai-cart-link')) return;
+        const footer = this.drawer.querySelector(this.footerSelector);
+        if (!footer) return;
+
+        const config = window.shopChatConfig || {};
+        const link = document.createElement('button');
+        link.type = 'button';
+        link.className = 'shop-ai-cart-link';
+
+        if (config.bubbleImage) {
+          const img = document.createElement('img');
+          img.src = config.bubbleImage;
+          img.alt = '';
+          img.width = 28;
+          img.height = 28;
+          img.className = 'shop-ai-cart-link-img';
+          link.appendChild(img);
+        }
+
+        const text = document.createElement('span');
+        text.className = 'shop-ai-cart-link-text';
+        const lead = (config.cartLinkLead || '').trim();
+        if (lead) text.appendChild(document.createTextNode(lead + ' '));
+        const cta = document.createElement('span');
+        cta.className = 'shop-ai-cart-link-cta';
+        cta.textContent = (config.cartLinkCta || 'Ask Dylan').trim();
+        text.appendChild(cta);
+        link.appendChild(text);
+
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.openChatFromCart();
+        });
+
+        footer.appendChild(link);
+      }
+    },
+
     init: function() {
       const container = document.querySelector('.shop-ai-chat-container');
       if (!container) return;
       this.UI.init(container);
+      this.CartLink.init();
       const conversationId = sessionStorage.getItem('shopAiConversationId');
       if (conversationId) {
         this.API.fetchChatHistory(conversationId, this.UI.elements.messagesContainer);

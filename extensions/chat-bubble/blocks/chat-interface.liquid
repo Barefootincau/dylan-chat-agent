@@ -43,6 +43,10 @@
     promptType: {{ block.settings.system_prompt | json }},
     welcomeMessage: {{ block.settings.welcome_message | json }},
     bubbleColor: {{ block.settings.chat_bubble_color | json }},
+    bubbleImage: {% if block.settings.bubble_image != blank %}{{ block.settings.bubble_image | image_url: width: 120 | json }}{% else %}null{% endif %},
+    cartDrawerLink: {{ block.settings.cart_drawer_link | json }},
+    cartLinkLead: {{ block.settings.cart_link_lead | json }},
+    cartLinkCta: {{ block.settings.cart_link_cta | json }},
     apiUrl: {{ block.settings.api_url | json }},
     quickReplies: [
       {{ block.settings.faq_1 | json }},
@@ -108,6 +112,29 @@
       "label": "Quick Reply 4",
       "info": "Optional. Leave blank to hide.",
       "default": "Shipping times"
+    },
+    {
+      "type": "header",
+      "content": "Cart drawer"
+    },
+    {
+      "type": "checkbox",
+      "id": "cart_drawer_link",
+      "label": "Show \"Ask Dylan\" link in cart drawer",
+      "info": "Hides the floating chat button while the cart drawer is open and adds a link at the bottom of the drawer instead.",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "cart_link_lead",
+      "label": "Cart link lead-in",
+      "default": "Questions?"
+    },
+    {
+      "type": "text",
+      "id": "cart_link_cta",
+      "label": "Cart link text",
+      "default": "Ask Dylan"
     },
     {
       "type": "text",

@@ -88,6 +88,51 @@
 
   .shop-ai-chat-bubble:hover { transform: scale(1.05); }
 
+  /* Cart drawer: hide the floating bubble so it never covers checkout,
+     and show the "Questions? Ask Dylan" link at the bottom of the drawer instead. */
+  .shop-ai-chat-bubble { transition: transform 0.3s ease, opacity 0.2s ease, visibility 0.2s; }
+  body.shop-ai-cart-drawer-open .shop-ai-chat-bubble {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .shop-ai-cart-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: 14px 0 0;
+    padding: 12px 0 2px;
+    border: 0;
+    border-top: 1px solid currentColor;
+    border-top-color: rgba(0, 0, 0, 0.18);
+    border-radius: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.3;
+    letter-spacing: normal;
+    text-transform: none;
+    cursor: pointer;
+  }
+  .shop-ai-cart-link-img {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .shop-ai-cart-link-cta {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 600;
+  }
+  .shop-ai-cart-link:hover .shop-ai-cart-link-cta,
+  .shop-ai-cart-link:focus-visible .shop-ai-cart-link-cta { text-decoration-thickness: 2px; }
+
   .shop-ai-chat-bubble svg { width: 30px; height: 30px; color: white; }
 
   .shop-ai-chat-window {
