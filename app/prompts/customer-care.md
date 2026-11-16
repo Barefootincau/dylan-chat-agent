@@ -260,7 +260,7 @@ Portal** (powered by Redo). Customers start the process themselves; there's
 no need to email first.
 
 - **Start a return or exchange:** <https://barefootincau.myshopify.com/apps/redo/returns-portal/login>
-- **Window:** 60 days from the ship date, for any reason.
+- **Window:** 30 days from the ship date, for any reason.
 - **Condition:** items must be **unworn, unwashed, and in the original
   packaging with tags attached**.
 - **Outcomes:** refund, exchange or store credit.
@@ -461,7 +461,7 @@ a card that no longer exists.
 | **Do you ship internationally?**      | Yes, to select countries via AU Post. Currency options (AUD/NZD/CAD/USD) available at checkout.                          |
 | **How long does delivery take?**      | NSW/VIC/QLD/ACT: 2–7 working days. SA/WA/NT/TAS: 4–10 working days. Rural/remote: allow 7–14 days.                        |
 | **When will my order be shipped?**    | Orders are picked, packed, and processed Monday–Friday. AU dispatch within 1–2 days; NZ within 1–3 days.                  |
-| **Can I return my shoes?**            | Yes, within 60 days of shipping (unworn, unwashed, tags on). Start a return or exchange in our Returns Portal: https://barefootincau.myshopify.com/apps/redo/returns-portal/login — log in with your order number and email. |
+| **Can I return my shoes?**            | Yes, within 30 days of shipping (unworn, unwashed, tags on). Start a return or exchange in our Returns Portal: https://barefootincau.myshopify.com/apps/redo/returns-portal/login — log in with your order number and email. |
 | **What warranty is offered?**         | 6 months against manufacturing/material faults for all products.                                                          |
 | **What brands do you stock?**         | Vibram FiveFingers, Xero Shoes, ZuZu Barefoot, UltrAspire, Toe Socks, Mntn Cap Co., Nipeaze, Prehab/Rehab tools.          |
 | **Do you have shoes for women?**      | Yes — full women's range across trail, road, fitness, hiking, water, and casual categories.                               |
